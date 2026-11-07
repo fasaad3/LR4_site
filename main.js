@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const navLinks = document.getElementById("nav-links");
   const year = document.getElementById("current-year");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const backToTop = document.getElementById("back-to-top");
 
   // Актуальный год в футере.
   year.textContent = String(new Date().getFullYear());
@@ -69,13 +70,19 @@ document.addEventListener("DOMContentLoaded", () => {
     if (window.innerWidth > 760) setMenu(false);
   });
 
-  // Компактная верхняя панель при прокрутке.
-  function updateHeader() {
+  // Верхняя панель и кнопка возврата к началу страницы.
+  function updateScrollState() {
     header.classList.toggle("scrolled", window.scrollY > 24);
+    backToTop.hidden = window.scrollY <= 300;
   }
 
-  updateHeader();
-  window.addEventListener("scroll", updateHeader, { passive: true });
+  updateScrollState();
+  window.addEventListener("scroll", updateScrollState, { passive: true });
+  window.addEventListener("pageshow", updateScrollState);
+
+  backToTop.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: reduceMotion.matches ? "instant" : "smooth" });
+  });
 
   // Доступный FAQ-аккордеон: кнопки работают с клавиатуры и касанием.
   const faqButtons = Array.from(document.querySelectorAll(".faq-question"));
